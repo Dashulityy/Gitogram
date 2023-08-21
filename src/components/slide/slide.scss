@@ -1,0 +1,29 @@
+.c-slide{
+    width: 375px;
+    height: 667px;
+    border-radius: 8px;
+    background: #FFF;
+    display: flex;
+    flex-direction: column;
+}
+.slide__head{
+    padding: 8px;
+}
+.slide__progress{
+    margin-bottom: 12px;
+}
+.slide__body{
+    padding: 18px;
+    flex: 1;
+    line-height: 1.6;
+    background: hsla(0,0%,50.2%,.05);
+    border-top: 1px solid hsla(0,0%,50.2%,.1);
+    border-bottom: 1px solid hsla(0,0%,50.2%,.1);
+    height: 458px;
+    overflow-y: scroll;
+}
+.slide__footer{
+    display: flex;
+    justify-content: center;
+    padding: 24px 53px;
+}
