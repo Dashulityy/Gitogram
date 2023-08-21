@@ -11,10 +11,10 @@
             </template>
             <template #content>
                 <ul class="stories">
-                    <li class="stories__item" v-for="story in stories" :key="story.id">
+                    <li class="stories__item" v-for="item in items" :key="item.id">
                         <user-stories
-                        :avatar="story.avatar"
-                        :username="story.username"
+                        :avatar="item.owner.avatar_url"
+                        :username="item.name"
                         @onPress="handlePress(story.id)"
                       />
                     </li>
@@ -23,7 +23,12 @@
         </topline>
     </div>
     <div class="container">
-      <feed />
+      <ul class="post-list">
+        <li class="post__item" v-for="n in 3" :key="n">
+          <post />
+        </li>
+      </ul>
+      <slide />
     </div>
 </template>
 
@@ -32,20 +37,32 @@ import { topline } from '../../components/topline'
 import { logo } from '../../icons/variants'
 import { userStories } from '../../components/userStories'
 import stories from './data.json'
-import { feed } from '../../components/feed'
+import { post } from '../../components/post'
 import { headerNav } from '../../components/headerNav'
+import { slide } from '../../components/slide'
+import * as api from '../../api'
 export default {
   name: 'feeds',
   components: {
     topline,
     logo,
     userStories,
-    feed,
-    headerNav
+    post,
+    headerNav,
+    slide
   },
   data () {
     return {
-      stories
+      stories,
+      items: []
+    }
+  },
+  async created () {
+    try {
+      const { data } = await api.trendings.getTrendings()
+      this.items = data.items
+    } catch (error) {
+      console.log(error)
     }
   }
 }
