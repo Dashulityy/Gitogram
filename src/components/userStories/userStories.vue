@@ -1,22 +1,25 @@
 <template>
-    <button class="c-user-stories" @click="$emit('onPress')">
+    <button class="c-user-stories" @click="goToStories">
         <div class="avatar">
-            <img :src="avatar" class="img" alt="username avatar" />
+            <img :src="data.userAvatar" class="img" alt="username avatar" />
         </div>
-        <div class="username">{{ username }}</div>
+        <div class="username">{{ data.userLogin }}</div>
     </button>
 </template>
 
 <script>
 export default {
+  name: 'userStories',
   props: {
-    avatar: {
-      type: String,
-      required: true
-    },
-    username: {
-      type: String,
-      required: true
+    data: {
+      type: Object,
+      required: true,
+      default: () => ({})
+    }
+  },
+  methods: {
+    goToStories () {
+      this.$router.push(`/stories/${this.data.id}`)
     }
   }
 }

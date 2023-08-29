@@ -11,13 +11,11 @@
             </template>
             <template #content>
                 <ul class="stories">
-                    <li class="stories__item" v-for="item in items" :key="item.id">
-                        <user-stories
-                        :avatar="item.owner.avatar_url"
-                        :username="item.name"
-                        @onPress="handlePress(story.id)"
+                  <li class="stories__item" v-for="item in items" :key="item.id" :id="item.id">
+                      <user-stories :data=getStoryData(item)
+                      @onPress="$router.push({name: 'stories', params: {initialSlide: item.id}})"
                       />
-                    </li>
+                  </li>
                 </ul>
             </template>
         </topline>
@@ -28,7 +26,7 @@
           <post />
         </li>
       </ul>
-      <slide />
+      <!--<slider />-->
     </div>
 </template>
 
@@ -36,11 +34,11 @@
 import { topline } from '../../components/topline'
 import { logo } from '../../icons/variants'
 import { userStories } from '../../components/userStories'
-import stories from './data.json'
 import { post } from '../../components/post'
 import { headerNav } from '../../components/headerNav'
-import { slide } from '../../components/slide'
+// import { slider } from '../../components/slider'
 import * as api from '../../api'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'feeds',
   components: {
@@ -48,17 +46,35 @@ export default {
     logo,
     userStories,
     post,
-    headerNav,
-    slide
+    headerNav
+    // slider
+  },
+  computed: {
+    ...mapState({
+      trendings: (state) => state.trendings.data
+    })
   },
   data () {
     return {
-      stories,
       items: []
+    }
+  },
+  methods: {
+    ...mapActions({
+      fetchTrendings: 'trendings/fetchTrendings'
+    }),
+    getStoryData (obj) {
+      return {
+        id: obj.id,
+        userAvatar: obj.owner?.avatar_url,
+        userLogin: obj.owner?.login,
+        content: obj.readme
+      }
     }
   },
   async created () {
     try {
+      await this.fetchTrendings()
       const { data } = await api.trendings.getTrendings()
       this.items = data.items
     } catch (error) {
