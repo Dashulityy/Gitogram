@@ -1,33 +1,33 @@
 <template>
-    <div class="topline">
-        <topline>
-            <template #headline>
-                <div class="logo">
-                    <logo />
-                </div>
-                <div class="navigation">
-                  <headerNav />
-                </div>
-            </template>
-            <template #content>
-                <ul class="stories">
-                  <li class="stories__item" v-for="item in items" :key="item.id" :id="item.id">
-                      <user-stories :data=getStoryData(item)
-                      @onPress="$router.push({name: 'stories', params: {initialSlide: item.id}})"
-                      />
-                  </li>
-                </ul>
-            </template>
-        </topline>
-    </div>
-    <div class="container">
-      <ul class="post-list">
-        <li class="post__item" v-for="n in 3" :key="n">
-          <post />
-        </li>
-      </ul>
-      <!--<slider />-->
-    </div>
+  <div class="topline">
+    <topline>
+      <template #headline>
+        <div class="logo">
+          <logo/>
+        </div>
+        <div class="navigation">
+          <headerNav/>
+        </div>
+      </template>
+      <template #content>
+        <ul class="stories">
+          <li class="stories__item" v-for="item in trendings" :key="item.id" :id="item.id">
+            <user-stories :data=getStoryData(item)
+                          @onPress="$router.push({name: 'stories', params: {id: item.id}})"
+            />
+          </li>
+        </ul>
+      </template>
+    </topline>
+  </div>
+  <div class="container">
+    <ul class="post-list">
+      <li class="post__item" v-for="n in 3" :key="n">
+        <post/>
+      </li>
+    </ul>
+    <!--<slider />-->
+  </div>
 </template>
 
 <script>
@@ -37,8 +37,9 @@ import { userStories } from '../../components/userStories'
 import { post } from '../../components/post'
 import { headerNav } from '../../components/headerNav'
 // import { slider } from '../../components/slider'
-import * as api from '../../api'
+// import * as api from '../../api'
 import { mapState, mapActions } from 'vuex'
+
 export default {
   name: 'feeds',
   components: {
@@ -61,7 +62,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchTrendings: 'trendings/fetchTrendings'
+      fetchTrendings: 'fetchTrendings'
     }),
     getStoryData (obj) {
       return {
@@ -75,8 +76,6 @@ export default {
   async created () {
     try {
       await this.fetchTrendings()
-      const { data } = await api.trendings.getTrendings()
-      this.items = data.items
     } catch (error) {
       console.log(error)
     }

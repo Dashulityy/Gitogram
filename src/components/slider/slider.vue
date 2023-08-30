@@ -1,26 +1,26 @@
 <template>
-    <div class="c-slider">
-        <div class="c-slider__container">
-            <ul class="slider__items" ref="slider">
-                <pre>{{ trendings }}</pre>
-                <li class="slider__item slide" v-for="(trending, ndx) in trendings" :key="trending.id" ref="item">
-                  <slide :data="getStoryData(trending)"
-                  :active="slideNdx === ndx"
-                  :loading="slideNdx === ndx && loading"
-                  :btnsShown="activeBtns"
-                  @next="handleSlide(ndx + 1)"
-                  @prev="handleSlide(ndx - 1)"
-                  @onFinish="handleSlide(ndx + 1)"
-                  />
-                </li>
-              </ul>
-        </div>
+  <div class="c-slider">
+    <div class="c-slider__container">
+      <ul class="slider__items" ref="slider">
+        <li class="slider__item slide" v-for="(trending, ndx) in trendings" :key="trending.id" ref="item">
+          <slide :data="getStoryData(trending)"
+                 :active="slideNdx === ndx"
+                 :loading="slideNdx === ndx && loading"
+                 :btnsShown="activeBtns"
+                 @next="handleSlide(ndx + 1)"
+                 @prev="handleSlide(ndx - 1)"
+                 @onFinish="handleSlide(ndx + 1)"
+          />
+        </li>
+      </ul>
     </div>
+  </div>
 </template>
 
 <script>
 import { slide } from '../slide'
-import { mapState, mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
+
 export default {
   name: 'slider',
   components: {
@@ -52,8 +52,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchTrendings: 'trendings/fetchTrendings',
-      fetchReadme: 'trendings/fetchReadme'
+      fetchReadme: 'fetchReadme'
     }),
     getStoryData (obj) {
       return {
@@ -65,17 +64,30 @@ export default {
       }
     },
     async fetchReadmeForActiveSlide () {
-      // получаем информацию для активного слайда
-      console.log(this.trendings)
-      const { id, owner, name } = this.trendings[this.slideNdx]
-      await this.fetchReadme({ id, owner: owner.login, repo: name })
+      // полуаем информацию для активного слайда
+      const {
+        id,
+        owner,
+        name
+      } = this.trendings[this.slideNdx]
+      debugger
+      await this.fetchReadme({
+        id,
+        owner: owner.login,
+        repo: name
+      })
     },
     moveSlider (slideNdx) {
-      const { slider, item } = this.$refs
-      const slideWidth = parseInt(getComputedStyle(item).getPropertyValue('width'), 10)
-      this.slideNdx = slideNdx
-      this.sliderPosition = -(slideWidth * slideNdx)
-      slider.style.transform = `translateX(${this.sliderPosition}px)`
+      const {
+        slider,
+        item
+      } = this.$refs
+      console.log(slider)
+      console.log(item)
+      // const slideWidth = parseInt(getComputedStyle(item).getPropertyValue('width'), 10)
+      // this.slideNdx = slideNdx
+      // this.sliderPosition = -(slideWidth * slideNdx)
+      // slider.style.transform = `translateX(${this.sliderPosition}px)`
     },
     async loadReadme () {
       this.loading = true
@@ -97,15 +109,9 @@ export default {
   },
   async mounted () {
     if (this.initialSlide) {
-      const ndx = this.trendings.findIndex(
-        (item) => item.id === this.initialSlide
-      )
+      const ndx = this.trendings.findIndex((item) => item.id === this.initialSlide)
       await this.handleSlide(ndx)
     }
-  },
-  async created () {
-    await this.fetchTrendings()
-    await this.loadReadme()
   }
 }
 </script>

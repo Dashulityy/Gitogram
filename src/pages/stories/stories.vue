@@ -11,7 +11,7 @@
             </div>
         </header>
         <div class="content">
-            <slider :initialSlide="Number($route.params.initialSlide)" />
+            <slider :initialSlide="Number($route.params.id)" />
         </div>
     </div>
 </template>
